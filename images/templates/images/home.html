@@ -1,0 +1,87 @@
+{% extends "images/base.html" %} {% block main %}
+
+<div>
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="button-card">
+        <form
+          id="image-form"
+          hx-target="#image-list"
+          hx-swap="innerHTML"
+          hx-encoding="multipart/form-data"
+          hx-post="{% url 'images:index' %}"
+          hx-trigger="input from:#upload-photo"
+        >
+          <div>
+            <label class="btn btn-primary" id="upload-label" for="upload-photo"
+              ><i class="bi bi-cloud-upload"></i> Add Image/s</label
+            >
+            <input type="file" name="image" id="upload-photo" multiple />
+          </div>
+        </form>
+        <div>
+          <a
+            hx-get="{% url 'images:active'%}"
+            class="btn btn-outline-primary"
+            hx-target="#image-list"
+            hx-swap="innerHTML"
+            >Show Active</a
+          >
+          <a
+            hx-get="{% url 'images:archived' %}"
+            class="btn btn-outline-info"
+            hx-target="#image-list"
+            hx-swap="innerHTML"
+            >Show Archived</a
+          >
+          <a
+            hx-get="{% url 'images:deleted' %}"
+            class="btn btn-outline-danger"
+            hx-target="#image-list"
+            hx-swap="innerHTML"
+            >Show Deleted</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="image-list" class="images-table">
+    {% include 'images/partials/image_list.html' %}
+  </div>
+</div>
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      
+        <div class="modal-body">
+          <img id="modalImage" src="https://image.shutterstock.com/image-vector/no-image-vector-symbol-missing-260nw-1310632172.jpg" alt="">
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+<script>
+    $(document).ready(function () {
+        // var imageModal = document.getElementById('imageModal')
+        $("#imageModal").on("show.bs.modal", function (event) { 
+            var re = new RegExp(/^.*\//)
+            var button = event.relatedTarget
+            var imageUrl = re.exec(window.location.href)[0] + button.getAttribute('data-imageUrl').substring(1)
+            var imageElement = document.getElementById("modalImage")
+            imageElement.src = imageUrl
+            // var imageUrl = event.relatedTarget.data("imageUrl")
+        });
+        // imageModal.addEventListener('shown.bs.modal', function (event) {
+        //     var image = event.relatedTarget
+        //     var imageUrl2 = button.getAttribute('data-imageUrl')
+        //     console.log(imageUrl2)
+        // })
+    })
+   
+</script>
+{% endblock main %}
+
